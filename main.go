@@ -23,7 +23,7 @@ var config *oauth2.Config
 func youtubeOAuth() {
 	ctx := context.Background()
 
-	b, err := ioutil.ReadFile("./client_secret.json")
+	b, err := ioutil.ReadFile("./client_secret_2.json")
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
@@ -47,16 +47,6 @@ func youtubeOAuth() {
 }
 
 func main() {
-	
-
-	// set a HTTP request handle function for path /greeting and registrate it
-	http.HandleFunc("/greeting", func (w http.ResponseWriter, 
-		r *http.Request) {
-	
-		// when receive the request, print the greeting meassage
-		fmt.Fprint(w, "Hello World")
-	
-	})
 
 	http.HandleFunc("/oauth", func (w http.ResponseWriter, 
 		r *http.Request) {
@@ -79,16 +69,30 @@ func main() {
 		fmt.Printf("\n>>> CODE %s\n", code)
 		defer r.Body.Close()
 
+		//- code exchange for token
+		// conf := &oauth2.Config{
+		// 	ClientID: "",
+		// 	ClientSecret: "",
+		// 	RedirectURL: "", //- can get from config.json
+		// 	Scopes:       []string{youtube.YoutubeReadonlyScope},
+		// 	Endpoint: oauth2.Endpoint{
+		// 		AuthURL:  "", //- can get from config.json
+		// 		TokenURL: "", //- can get from config.json
+		// 	},
+		// }
+
 		tok, err := config.Exchange(oauth2.NoContext, code)
 		if err != nil {
 			fmt.Printf("Unable to retrieve token from web %v", err)	
 		}
+		
+		//- convert to json
 		b, err := json.Marshal(tok)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Printf( "token json %s" ,string(b))
+		fmt.Printf("tokens %s\n", string(b))
 	})
 
 	// print out the server is going to start and show the time
