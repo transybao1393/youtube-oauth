@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -13,10 +12,8 @@ import (
 )
 
 func YoutubeVideoUpload(configByte []byte) {
-	flag.Parse()
-
 	//- default params
-	filename    := "" //- upload file path
+	filename    := "/Users/transybao/Downloads/cat.mp4" //- upload file path
 	title       := ""
 	description := ""
 	category    := "22"
@@ -62,6 +59,7 @@ func YoutubeVideoUpload(configByte []byte) {
 		"status",
 	}
 	call := service.Videos.Insert(parts, upload)
+	
 
 	file, err := os.Open(filename)
 	if err != nil {

@@ -19,11 +19,12 @@ import (
 )
 
 var config *oauth2.Config
+var client *http.Client
 
 func youtubeOAuth() {
 	ctx := context.Background()
 
-	b, err := ioutil.ReadFile("./client_secret_2.json")
+	b, err := ioutil.ReadFile("./client_secret.json")
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
@@ -38,7 +39,7 @@ func youtubeOAuth() {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	client := services.GetClient(ctx, config)
+	client = services.GetClient(ctx, config)
 	service, err := youtube.New(client)
 
 	services.HandleError(err, "Error creating YouTube client")
@@ -93,6 +94,17 @@ func main() {
 			return
 		}
 		fmt.Printf("tokens %s\n", string(b))
+	})
+
+	http.HandleFunc("/video/upload", func (w http.ResponseWriter, 
+		r *http.Request) {
+
+		b, err := ioutil.ReadFile("./client_secret.json")
+		if err != nil {
+			log.Fatalf("Unable to read client secret file: %v", err)
+		}
+
+		services.YoutubeVideoUpload(b)
 	})
 
 	// print out the server is going to start and show the time
